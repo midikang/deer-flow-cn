@@ -81,6 +81,7 @@ DeerFlow-CN 是基于 [bytedance/deer-flow](https://github.com/bytedance/deer-fl
 - **响应式设计**：完美适配桌面、平板、手机等设备
 - **多分辨率支持**：支持 4K、竖屏等多种显示模式
 - **Chat 模式**：支持简单聊天模式，可选择性调用研究功能
+- **对话记录功能**：自动保存和展示历史对话，便于回顾与管理
 - **优化交互**：修复界面异常，提升用户体验
 
 ### 🔒 部署与安全
@@ -150,7 +151,7 @@ node start.js
 
 # 前端 HTTPS：建议使用反向代理（如 Nginx）处理前端 SSL
 # 开发环境可使用：cd web && npx next dev --experimental-https
-
+```
 访问 `http://localhost:3000` 开始使用！（如启用前端SSL则访问 `https://localhost:3000`）
 
 ---
