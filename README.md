@@ -9,7 +9,7 @@
 [![Node.js](https://img.shields.io/badge/node.js-22+-green.svg)](https://nodejs.org)
 [![Docker](https://img.shields.io/badge/docker-supported-blue.svg)](https://docker.com)
 
-🌐 [在线 Demo 体验](https://ai.liuyuan.top) | 📖 [配置指南](docs/configuration_guide.md) | 🤔 [常见问题](docs/FAQ.md)
+🌐 [在线 Demo 体验](https://ai.liuyuan.top) | 📖 [配置指南](docs/configuration_guide.md) | 🤔 [常见问题](docs/FAQ.md) | 🎓 [交互式学习课程](deerflow-interactive-course.html)
 
 </div>
 
@@ -241,6 +241,29 @@ docker-compose up -d
 - 📚 **API 文档**：http://localhost:8000/docs
 
 ## 📖 使用指南
+
+### 🎓 交互式学习课程
+
+**想深入了解 DeerFlow-CN 的工作原理?** 我们为你准备了一个精美的交互式课程!
+
+📚 [打开交互式课程](deerflow-interactive-course.html) - 一个自包含的 HTML 文件,无需安装,直接在浏览器中打开即可学习。
+
+**课程特色:**
+- 🌐 **双语教学** - 中英文对照,适合所有开发者
+- 🎯 **从零开始** - 无需技术背景,用日常语言解释每个概念
+- 🎨 **精美交互** - 代码对照翻译、动画演示、即时测验
+- 💡 **实战导向** - 跟踪真实查询的完整流程,理解系统架构
+
+**你将学到:**
+1. 用户问题如何触发整个系统workflow
+2. 五大智能体(协调员、规划师、研究员、报告员、编码员)的分工协作
+3. LangGraph 如何编排多智能体工作流
+4. 系统如何调用外部搜索引擎和 API
+5. 如何生成多种格式的输出(报告/PPT/播客)
+6. 前端 React 与后端 FastAPI 的实时通信
+7. DeerFlow-CN 的整体架构设计
+
+---
 
 ### 基本使用流程
 

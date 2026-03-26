@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DeerFlow-CN 交互式课程 | DeerFlow-CN Interactive Course</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===== DESIGN SYSTEM ===== */
+    :root {
+      /* Colors */
+      --color-bg:             #FAF7F2;
+      --color-bg-warm:        #F5F0E8;
+      --color-bg-code:        #1E1E2E;
+      --color-text:           #2C2A28;
+      --color-text-secondary: #6B6560;
+      --color-text-muted:     #9E9790;
+      --color-border:         #E5DFD6;
+      --color-border-light:   #EEEBE5;
+      --color-surface:        #FFFFFF;
+      --color-surface-warm:   #FDF9F3;
+
+      /* Accent - using deep teal for tech/AI vibe */
+      --color-accent:         #2A7B9B;
+      --color-accent-hover:   #236A88;
+      --color-accent-light:   #E4F2F7;
+      --color-accent-muted:   #5D9CB7;
+
+      /* Semantic */
+      --color-success:        #2D8B55;
+      --color-success-light:  #E8F5EE;
+      --color-error:          #C93B3B;
+      --color-error-light:    #FDE8E8;
+      --color-info:           #2A7B9B;
+      --color-info-light:     #E4F2F7;
+
+      /* Actor colors */
+      --color-actor-1:        #D94F30;  /* Coordinator */
+      --color-actor-2:        #2A7B9B;  /* Planner */
+      --color-actor-3:        #7B6DAA;  /* Researcher */
+      --color-actor-4:        #D4A843;  /* Reporter */
+      --color-actor-5:        #2D8B55;  /* Coder */
+
+      /* Typography */
+      --font-display:  'Bricolage Grotesque', Georgia, serif;
+      --font-body:     'DM Sans', -apple-system, sans-serif;
+      --font-mono:     'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+
+      --text-xs:   0.75rem;
+      --text-sm:   0.875rem;
+      --text-base: 1rem;
+      --text-lg:   1.125rem;
+      --text-xl:   1.25rem;
+      --text-2xl:  1.5rem;
+      --text-3xl:  1.875rem;
+      --text-4xl:  2.25rem;
+      --text-5xl:  3rem;
+      --text-6xl:  3.75rem;
+
+      --leading-tight:  1.15;
+      --leading-snug:   1.3;
+      --leading-normal: 1.6;
+      --leading-loose:  1.8;
+
+      /* Spacing */
+      --space-1:  0.25rem;
+      --space-2:  0.5rem;
+      --space-3:  0.75rem;
+      --space-4:  1rem;
+      --space-5:  1.25rem;
+      --space-6:  1.5rem;
+      --space-8:  2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+      --space-16: 4rem;
+      --space-20: 5rem;
+      --space-24: 6rem;
+
+      --content-width:     800px;
+      --content-width-wide: 1000px;
+      --nav-height:        50px;
+      --radius-sm:  8px;
+      --radius-md:  12px;
+      --radius-lg:  16px;
+      --radius-full: 9999px;
+
+      /* Shadows */
+      --shadow-sm:  0 1px 2px rgba(44, 42, 40, 0.05);
+      --shadow-md:  0 4px 12px rgba(44, 42, 40, 0.08);
+      --shadow-lg:  0 8px 24px rgba(44, 42, 40, 0.1);
+      --shadow-xl:  0 16px 48px rgba(44, 42, 40, 0.12);
+
+      /* Animations */
+      --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --duration-fast:   150ms;
+      --duration-normal: 300ms;
+      --duration-slow:   500ms;
+      --stagger-delay:   120ms;
+    }
+
+    /* ===== BASE STYLES ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-snap-type: y proximity;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: var(--leading-normal);
+      color: var(--color-text);
+      background: var(--color-bg);
+      background-image: radial-gradient(
+        ellipse at 20% 50%,
+        rgba(42, 123, 155, 0.03) 0%,
+        transparent 50%
+      );
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: var(--color-border);
+      border-radius: var(--radius-full);
+    }
+
+    /* Code blocks */
+    pre, code {
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-x: hidden;
+    }
+
+    /* ===== NAVIGATION ===== */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--nav-height);
+      background: rgba(250, 247, 242, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 1000;
+      border-bottom: 1px solid var(--color-border-light);
+    }
+
+    .progress-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: var(--color-accent);
+      width: 0%;
+      transition: width 0.2s ease-out;
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      height: 100%;
+      padding: 0 var(--space-6);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: var(--text-lg);
+      color: var(--color-text);
+    }
+
+    .nav-dots {
+      display: flex;
+      gap: var(--space-3);
+    }
+
+    .nav-dot {
+      width: 10px;
+      height: 10px;
+      border: 2px solid var(--color-text-muted);
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+      transition: all var(--duration-fast);
+      position: relative;
+    }
+
+    .nav-dot:hover {
+      border-color: var(--color-accent);
+      transform: scale(1.2);
+    }
+
+    .nav-dot.active {
+      border-color: var(--color-accent);
+      background: var(--color-accent);
+      box-shadow: 0 0 8px rgba(42, 123, 155, 0.3);
+    }
+
+    .nav-dot.visited {
+      background: var(--color-accent-muted);
+      border-color: var(--color-accent-muted);
+    }
+
+    /* ===== MODULE STRUCTURE ===== */
+    .module {
+      min-height: 100dvh;
+      min-height: 100vh;
+      scroll-snap-align: start;
+      padding: var(--space-16) var(--space-6);
+      padding-top: calc(var(--nav-height) + var(--space-12));
+    }
+
+    .module-content {
+      max-width: var(--content-width);
+      margin: 0 auto;
+    }
+
+    .module-header {
+      margin-bottom: var(--space-12);
+    }
+
+    .module-number {
+      font-family: var(--font-display);
+      font-size: var(--text-6xl);
+      font-weight: 800;
+      color: var(--color-accent);
+      opacity: 0.15;
+      line-height: 1;
+      display: block;
+      margin-bottom: var(--space-2);
+    }
+
+    .module-title {
+      font-family: var(--font-display);
+      font-size: var(--text-4xl);
+      font-weight: 700;
+      line-height: var(--leading-tight);
+      margin-bottom: var(--space-3);
+    }
+
+    .module-subtitle {
+      font-size: var(--text-lg);
+      color: var(--color-text-secondary);
+      line-height: var(--leading-snug);
+    }
+
+    .module-body {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .screen {
+      margin-bottom: var(--space-8);
+    }
+
+    .screen-heading {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 600;
+      margin-bottom: var(--space-4);
+    }
+
+    .screen p {
+      margin-bottom: var(--space-4);
+      line-height: var(--leading-normal);
+    }
+
+    /* ===== ANIMATIONS ===== */
+    .animate-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity var(--duration-slow) var(--ease-out),
+                  transform var(--duration-slow) var(--ease-out);
+    }
+
+    .animate-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .stagger-children > .animate-in {
+      transition-delay: calc(var(--stagger-index, 0) * var(--stagger-delay));
+    }
+
+    /* ===== INTERACTIVE ELEMENTS ===== */
+
+    /* Code Translation Blocks */
+    .translation-block {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      margin: var(--space-8) 0;
+    }
+
+    .translation-code {
+      background: var(--color-bg-code);
+      color: #CDD6F4;
+      padding: var(--space-6);
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      line-height: 1.7;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .translation-code pre,
+    .translation-code code {
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-x: hidden;
+    }
+
+    .translation-english {
+      background: var(--color-surface-warm);
+      padding: var(--space-6);
+      font-size: var(--text-sm);
+      line-height: 1.7;
+      border-left: 3px solid var(--color-accent);
+    }
+
+    .translation-label {
+      position: absolute;
+      top: var(--space-2);
+      right: var(--space-3);
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.5;
+    }
+
+    .translation-english .translation-label {
+      color: var(--color-text-muted);
+    }
+
+    .translation-lines {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .tl {
+      margin: 0 !important;
+      padding-left: var(--space-2);
+    }
+
+    /* Syntax highlighting */
+    .code-keyword  { color: #CBA6F7; }
+    .code-string   { color: #A6E3A1; }
+    .code-function { color: #89B4FA; }
+    .code-comment  { color: #6C7086; }
+    .code-number   { color: #FAB387; }
+    .code-property { color: #F9E2AF; }
+    .code-operator { color: #94E2D5; }
+
+    /* Glossary Tooltips */
+    .term {
+      border-bottom: 1.5px dashed var(--color-accent-muted);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .term:hover, .term.active {
+      border-bottom-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+
+    .term-tooltip {
+      position: fixed;
+      background: var(--color-bg-code);
+      color: #CDD6F4;
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-sm);
+      font-size: var(--text-sm);
+      font-family: var(--font-body);
+      line-height: var(--leading-normal);
+      width: max(200px, min(320px, 80vw));
+      box-shadow: var(--shadow-lg);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity var(--duration-fast);
+      z-index: 10000;
+    }
+
+    .term-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: var(--color-bg-code);
+    }
+
+    .term-tooltip.visible {
+      opacity: 1;
+    }
+
+    .term-tooltip.flip {
+      bottom: auto;
+      top: calc(100% + 8px);
+    }
+
+    .term-tooltip.flip::after {
+      top: auto;
+      bottom: 100%;
+      border-top-color: transparent;
+      border-bottom-color: var(--color-bg-code);
+    }
+
+    /* Callout Boxes */
+    .callout {
+      display: flex;
+      gap: var(--space-4);
+      padding: var(--space-5);
+      border-radius: var(--radius-md);
+      margin: var(--space-6) 0;
+      border-left: 4px solid;
+    }
+
+    .callout-accent {
+      background: var(--color-accent-light);
+      border-left-color: var(--color-accent);
+    }
+
+    .callout-info {
+      background: var(--color-info-light);
+      border-left-color: var(--color-info);
+    }
+
+    .callout-icon {
+      font-size: var(--text-3xl);
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .callout-title {
+      display: block;
+      margin-bottom: var(--space-2);
+      font-weight: 600;
+      font-family: var(--font-display);
+    }
+
+    .callout-content p {
+      margin: 0;
+    }
+
+    /* Pattern Cards */
+    .pattern-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-4);
+      margin: var(--space-6) 0;
+    }
+
+    .pattern-card {
+      background: var(--color-surface);
+      border-radius: var(--radius-md);
+      padding: var(--space-6);
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal);
+    }
+
+    .pattern-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .pattern-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      margin-bottom: var(--space-3);
+    }
+
+    .pattern-title {
+      font-weight: 600;
+      font-family: var(--font-display);
+      margin-bottom: var(--space-2);
+    }
+
+    .pattern-desc {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      margin: 0;
+    }
+
+    /* Icon Rows */
+    .icon-rows {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      margin: var(--space-6) 0;
+    }
+
+    .icon-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4);
+      background: var(--color-surface);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .icon-row p {
+      margin: 0;
+      color: var(--color-text-secondary);
+      font-size: var(--text-sm);
+    }
+
+    .icon-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    /* Group Chat Animation */
+    .chat-window {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      box-shadow: var(--shadow-md);
+      margin: var(--space-8) 0;
+      max-width: 600px;
+    }
+
+    .chat-messages {
+      min-height: 300px;
+      max-height: 500px;
+      overflow-y: auto;
+      margin-bottom: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .chat-message {
+      display: flex;
+      gap: var(--space-3);
+      align-items: flex-start;
+    }
+
+    .chat-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: var(--text-sm);
+      flex-shrink: 0;
+    }
+
+    .chat-bubble {
+      background: var(--color-bg);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-md);
+      flex: 1;
+    }
+
+    .chat-sender {
+      font-weight: 600;
+      font-size: var(--text-sm);
+      display: block;
+      margin-bottom: var(--space-1);
+    }
+
+    .chat-bubble p {
+      margin: 0;
+      font-size: var(--text-sm);
+    }
+
+    .chat-typing {
+      display: flex;
+      gap: var(--space-3);
+      align-items: center;
+    }
+
+    .chat-typing-dots {
+      display: flex;
+      gap: var(--space-2);
+      padding: var(--space-3) var(--space-4);
+      background: var(--color-bg);
+      border-radius: var(--radius-md);
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-text-muted);
+      animation: typingBounce 1.4s infinite;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-6px); }
+    }
+
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .chat-controls {
+      display: flex;
+      gap: var(--space-3);
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .chat-controls button {
+      padding: var(--space-2) var(--space-4);
+      background: var(--color-accent);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      transition: background var(--duration-fast);
+    }
+
+    .chat-controls button:hover {
+      background: var(--color-accent-hover);
+    }
+
+    .chat-progress {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+    }
+
+    /* Flow Steps */
+    .flow-steps {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      margin: var(--space-8) 0;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .flow-step {
+      background: var(--color-surface);
+      padding: var(--space-5);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      text-align: center;
+      min-width: 150px;
+    }
+
+    .flow-step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      color: white;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      margin: 0 auto var(--space-3);
+    }
+
+    .flow-step p {
+      margin: 0;
+      font-size: var(--text-sm);
+    }
+
+    .flow-arrow {
+      font-size: var(--text-2xl);
+      color: var(--color-accent);
+      font-weight: 600;
+    }
+
+    /* Quiz Elements */
+    .quiz-container {
+      margin: var(--space-8) 0;
+    }
+
+    .quiz-question-block {
+      margin-bottom: var(--space-6);
+    }
+
+    .quiz-question {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      margin-bottom: var(--space-4);
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      margin-bottom: var(--space-3);
+    }
+
+    .quiz-option {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      cursor: pointer;
+      width: 100%;
+      transition: border-color var(--duration-fast), background var(--duration-fast);
+      text-align: left;
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+    }
+
+    .quiz-option:hover {
+      border-color: var(--color-accent-muted);
+    }
+
+    .quiz-option.selected {
+      border-color: var(--color-accent);
+      background: var(--color-accent-light);
+    }
+
+    .quiz-option.correct {
+      border-color: var(--color-success);
+      background: var(--color-success-light);
+    }
+
+    .quiz-option.incorrect {
+      border-color: var(--color-error);
+      background: var(--color-error-light);
+    }
+
+    .quiz-option-radio {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--color-border);
+      transition: all var(--duration-fast);
+      flex-shrink: 0;
+    }
+
+    .quiz-option.selected .quiz-option-radio {
+      border-color: var(--color-accent);
+      background: var(--color-accent);
+      box-shadow: inset 0 0 0 3px white;
+    }
+
+    .quiz-feedback {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height var(--duration-normal), opacity var(--duration-normal);
+    }
+
+    .quiz-feedback.show {
+      max-height: 200px;
+      opacity: 1;
+      padding: var(--space-3);
+      margin-top: var(--space-2);
+      border-radius: var(--radius-sm);
+    }
+
+    .quiz-feedback.success {
+      background: var(--color-success-light);
+      color: var(--color-success);
+    }
+
+    .quiz-feedback.error {
+      background: var(--color-error-light);
+      color: var(--color-error);
+    }
+
+    .quiz-check-btn, .quiz-reset-btn {
+      padding: var(--space-3) var(--space-5);
+      background: var(--color-accent);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      font-weight: 500;
+      transition: background var(--duration-fast);
+      margin-right: var(--space-3);
+      margin-top: var(--space-4);
+    }
+
+    .quiz-check-btn:hover, .quiz-reset-btn:hover {
+      background: var(--color-accent-hover);
+    }
+
+    .quiz-reset-btn {
+      background: var(--color-text-secondary);
+    }
+
+    .quiz-reset-btn:hover {
+      background: var(--color-text);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      :root {
+        --text-4xl: 1.875rem;
+        --text-5xl: 2.25rem;
+        --text-6xl: 3rem;
+      }
+
+      .translation-block {
+        grid-template-columns: 1fr;
+      }
+
+      .translation-english {
+        border-left: none;
+        border-top: 3px solid var(--color-accent);
+      }
+
+      .pattern-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .flow-steps {
+        flex-direction: column;
+      }
+
+      .flow-arrow {
+        transform: rotate(90deg);
+      }
+
+      .nav-dots {
+        display: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      :root {
+        --text-4xl: 1.5rem;
+        --text-5xl: 1.875rem;
+        --text-6xl: 2.25rem;
+      }
+
+      .module {
+        padding: var(--space-8) var(--space-4);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="progress-bar" role="progressbar" aria-valuenow="0"></div>
+    <div class="nav-inner">
+      <span class="nav-title">🦌 DeerFlow-CN 交互式课程</span>
+      <div class="nav-dots">
+        <button class="nav-dot active" data-target="module-1" aria-label="Module 1"></button>
+        <button class="nav-dot" data-target="module-2" aria-label="Module 2"></button>
+        <button class="nav-dot" data-target="module-3" aria-label="Module 3"></button>
+        <button class="nav-dot" data-target="module-4" aria-label="Module 4"></button>
+        <button class="nav-dot" data-target="module-5" aria-label="Module 5"></button>
+        <button class="nav-dot" data-target="module-6" aria-label="Module 6"></button>
+        <button class="nav-dot" data-target="module-7" aria-label="Module 7"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Module 1: What happens when you ask a question -->
+  <section class="module" id="module-1" style="background: var(--color-bg)">
+    <div class="module-content">
+      <header class="module-header animate-in">
+        <span class="module-number">01</span>
+        <h1 class="module-title">你提出问题时发生了什么<br>What Happens When You Ask a Question</h1>
+        <p class="module-subtitle">从用户输入到最终报告的完整旅程 | The complete journey from user input to final report</p>
+      </header>
+
+      <div class="module-body stagger-children">
+        <section class="screen animate-in" style="--stagger-index: 0">
+          <h2 class="screen-heading">DeerFlow-CN 是什么? | What is DeerFlow-CN?</h2>
+          <p>想象一下,你有一位超级聪明的研究助手,能够在几分钟内帮你深度调研任何话题——从技术分析到市场研究,从学术探索到趋势洞察。这就是 <strong>DeerFlow-CN</strong>。</p>
+          <p>Imagine you have a super-smart research assistant who can help you deeply investigate any topic within minutes — from technical analysis to market research, from academic exploration to trend insights. That's <strong>DeerFlow-CN</strong>.</p>
+
+          <p>它不仅能生成详细的研究报告,还能将结果转换成 <span class="term" data-definition="演示文稿(PowerPoint)是一种用于展示信息的幻灯片格式,常用于会议和汇报。">PPT 演示文稿</span> 或 <span class="term" data-definition="播客(Podcast)是一种音频内容格式,可以像收音机节目一样收听,方便在通勤或运动时获取信息。">播客音频</span>。</p>
+          <p>It can not only generate detailed research reports, but also convert results into <span class="term" data-definition="A presentation (PowerPoint) is a slideshow format used to present information, commonly used for meetings and presentations.">PPT presentations</span> or <span class="term" data-definition="A podcast is an audio content format that can be listened to like a radio program, convenient for getting information while commuting or exercising.">podcast audio</span>.</p>
+        </section>
+
+        <section class="screen animate-in" style="--stagger-index: 1">
+          <h2 class="screen-heading">让我们跟踪一个真实查询 | Let's Trace a Real Query</h2>
+          <p>假设你在 DeerFlow-CN 中输入:</p>
+          <p>Suppose you enter in DeerFlow-CN:</p>
+
+          <div style="background: var(--color-surface); padding: var(--space-5); border-radius: var(--radius-md); border-left: 4px solid var(--color-accent); margin: var(--space-4) 0;">
+            <p style="margin: 0; font-style: italic; font-size: var(--text-lg);">"帮我研究一下大语言模型在代码生成领域的最新进展"</p>
+            <p style="margin: var(--space-2) 0 0; font-style: italic; font-size: var(--text-lg); color: var(--color-text-secondary);">"Help me research the latest advances in large language models for code generation"</p>
+          </div>
+
+          <p>接下来的几分钟里,系统会经历一个复杂但高效的工作流程。让我们一步步拆解它。</p>
+          <p>Over the next few minutes, the system will go through a complex but efficient workflow. Let's break it down step by step.</p>
+        </section>
+
+        <section class="screen animate-in" style="--stagger-index: 2">
+          <h2 class="screen-heading">完整流程一览 | Complete Flow Overview</h2>
+
+          <div class="flow-steps">
+            <div class="flow-step">
+              <div class="flow-step-num">1</div>
+              <p><strong>用户输入</strong><br>You type your question</p>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-num">2</div>
+              <p><strong>协调员理解</strong><br>Coordinator understands</p>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-num">3</div>
+              <p><strong>规划师制定计划</strong><br>Planner creates plan</p>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-num">4</div>
+              <p><strong>研究团队执行</strong><br>Research team executes</p>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-num">5</div>
+              <p><strong>报告员撰写</strong><br>Reporter writes report</p>
+            </div>
+          </div>
+
+          <div class="callout callout-accent">
+            <div class="callout-icon">💡</div>
+            <div class="callout-content">
+              <strong class="callout-title">核心洞察 | Key Insight</strong>
+              <p>这种"分工协作"的模式是软件工程中最重要的理念之一,叫做 <span class="term" data-definition="关注点分离(Separation of Concerns)是一种设计原则,将复杂系统分解为多个专注于特定任务的组件,就像公司里不同部门各司其职。">关注点分离</span>(Separation of Concerns)。每个"角色"只专注做好一件事,整体系统就会既强大又易维护。</p>
+              <p>This "division of labor" pattern is one of the most important concepts in software engineering, called <span class="term" data-definition="Separation of Concerns is a design principle that breaks down complex systems into multiple components focused on specific tasks, like different departments in a company each doing their own job.">Separation of Concerns</span>. Each "role" focuses on doing one thing well, making the overall system both powerful and easy to maintain.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen animate-in" style="--stagger-index: 3">
+          <h2 class="screen-heading">实际代码:用户输入如何进入系统 | Actual Code: How User Input Enters the System</h2>
+
+          <div class="translation-block">
+            <div class="translation-code">
+              <span class="translation-label">CODE (main.py)</span>
+              <pre><code><span class="code-keyword">def</span> <span class="code-function">ask</span>(
+    question,
+    debug=<span class="code-keyword">False</span>,
+    max_plan_iterations=<span class="code-number">1</span>,
+    max_step_num=<span class="code-number">3</span>,
+    enable_background_investigation=<span class="code-keyword">True</span>,
+):
+    asyncio.<span class="code-function">run</span>(
+        <span class="code-function">run_agent_workflow_async</span>(
+            user_input=question,
+            debug=debug,
+            max_plan_iterations=max_plan_iterations,
+            max_step_num=max_step_num,
+            enable_background_investigation=enable_background_investigation,
+        )
+    )</code></pre>
+            </div>
+            <div class="translation-english">
+              <span class="translation-label">中文解释 | PLAIN ENGLISH</span>
+              <div class="translation-lines">
+                <p class="tl">定义一个叫 <code>ask</code> 的函数,接收你的问题和一些配置...</p>
+                <p class="tl">Define a function called <code>ask</code> that receives your question and some settings...</p>
+                <p class="tl">启动异步工作流(可以同时做多件事),把你的问题传给智能体团队...</p>
+                <p class="tl">Start an async workflow (can do multiple things at once), pass your question to the agent team...</p>
+                <p class="tl">配置包括:是否启用背景调查、最大研究步骤数等...</p>
+                <p class="tl">Settings include: whether to enable background investigation, max research steps, etc...</p>
+              </div>
+            </div>
+          </div>
+
+          <p>当你在终端运行 <code>python main.py "你的问题"</code> 或在网页界面点击"发送"时,这个函数就开始工作了。</p>
+          <p>When you run <code>python main.py "your question"</code> in the terminal or click "Send" on the web interface, this function starts working.</p>
+        </section>
+
+        <section class="screen animate-in" style="--stagger-index: 4">
+          <h2 class="screen-heading">测试一下:你学到了什么? | Quiz: What Did You Learn?</h2>
+
+          <div class="quiz-container">
+            <div class="quiz-question-block" data-question="q1-1" data-correct="option-b">
+              <h3 class="quiz-question">当用户提出问题时,第一个开始工作的是谁? | When a user asks a question, who starts working first?</h3>
+              <div class="quiz-options">
+                <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                  <div class="quiz-option-radio"></div>
+                  <span>直接搜索网络 | Search the web directly</span>
+                </button>
+                <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                  <div class="quiz-option-radio"></div>
+                  <span>协调员(Coordinator)理解问题 | Coordinator understands the question</span>
+                </button>
+                <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                  <div class="quiz-option-radio"></div>
+                  <span>立即生成报告 | Generate report immediately</span>
+                </button>
+              </div>
+              <div class="quiz-feedback" id="q1-1-feedback"></div>
+            </div>
+
+            <div class="quiz-question-block" data-question="q1-2" data-correct="option-a">
+              <h3 class="quiz-question">为什么要把系统分成多个"角色"而不是一个大程序? | Why split the system into multiple "roles" instead of one big program?</h3>
+              <div class="quiz-options">
+                <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                  <div class="quiz-option-radio"></div>
+                  <span>每个角色专注一件事,整体更强大也更易维护 | Each role focuses on one thing, making the whole system more powerful and maintainable</span>
+                </button>
+                <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                  <div class="quiz-option-radio"></div>
+                  <span>为了让代码看起来更复杂 | To make the code look more complex</span>
+                </button>
+                <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                  <div class="quiz-option-radio"></div>
+                  <span>只是因为流行这样做 | Just because it's popular</span>
+                </button>
+              </div>
+              <div class="quiz-feedback" id="q1-2-feedback"></div>
+            </div>
+
+            <button class="quiz-check-btn" onclick="checkQuiz('module-1')">检查答案 | Check Answers</button>
+            <button class="quiz-reset-btn" onclick="resetQuiz('module-1')">重新答题 | Try Again</button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- Module 2: Meet the Agent Team -->
+  <section class="module" id="module-2" style="background: var(--color-bg-warm)">
+    <div class="module-content">
+      <header class="module-header animate-in">
+        <span class="module-number">02</span>
+        <h1 class="module-title">认识智能体团队<br>Meet the Agent Team</h1>
+        <p class="module-subtitle">五个专业角色如何协作完成研究任务 | How five specialized roles collaborate to complete research tasks</p>
+      </header>
+
+      <div class="module-body stagger-children">
+        <section class="screen animate-in" style="--stagger-index: 0">
+          <h2 class="screen-heading">什么是"智能体"? | What is an "Agent"?</h2>
+          <p>把 <span class="term" data-definition="智能体(Agent)是一个能够自主完成任务的AI程序,就像一个虚拟员工,可以思考、决策并执行特定工作。">智能体</span> 想象成一个虚拟员工。它有特定的职责,能够使用工具,并且知道何时需要其他智能体的帮助。</p>
+          <p>Think of an <span class="term" data-definition="An Agent is an AI program that can autonomously complete tasks, like a virtual employee who can think, make decisions, and execute specific work.">agent</span> as a virtual employee. It has specific responsibilities, can use tools, and knows when it needs help from other agents.</p>
+
+          <p>DeerFlow-CN 有五个核心智能体,就像一个迷你研究公司:</p>
+          <p>DeerFlow-CN has five core agents, like a mini research company:</p>
+        </section>
+
+        <section class="screen animate-in" style="--stagger-index: 1">
+          <h2 class="screen-heading">五大角色 | The Five Roles</h2>
+
+          <div class="pattern-cards">
+            <div class="pattern-card" style="border-top: 3px solid var(--color-actor-1)">
+              <div class="pattern-icon" style="background: var(--color-actor-1)">🎯</div>
+              <h4 class="pattern-title">协调员 Coordinator</h4>
+              <p class="pattern-desc">理解你的需求,决定是深度研究还是简单聊天,像项目经理一样协调整个团队。<br>Understands your needs, decides whether to do deep research or simple chat, coordinates the whole team like a project manager.</p>
+            </div>
+
+            <div class="pattern-card" style="border-top: 3px solid var(--color-actor-2)">
+              <div class="pattern-icon" style="background: var(--color-actor-2)">📋</div>
+              <h4 class="pattern-title">规划师 Planner</h4>
+              <p class="pattern-desc">制定研究计划,把大问题拆分成可执行的小步骤,像战略顾问。<br>Creates research plans, breaks big questions into executable steps, like a strategy consultant.</p>
+            </div>
+
+            <div class="pattern-card" style="border-top: 3px solid var(--color-actor-3)">
+              <div class="pattern-icon" style="background: var(--color-actor-3)">🔍</div>
+              <h4 class="pattern-title">研究员 Researcher</h4>
+              <p class="pattern-desc">执行具体的搜索和信息收集,调用搜索引擎、网页爬虫等工具。<br>Executes specific searches and information gathering, uses search engines, web crawlers, and other tools.</p>
+            </div>
+
+            <div class="pattern-card" style="border-top: 3px solid var(--color-actor-4)">
+              <div class="pattern-icon" style="background: var(--color-actor-4)">📝</div>
+              <h4 class="pattern-title">报告员 Reporter</h4>
+              <p class="pattern-desc">整合所有研究成果,撰写结构清晰、内容详实的最终报告。<br>Integrates all research findings, writes clear and detailed final reports.</p>
+            </div>
+
+            <div class="pattern-card" style="border-top: 3px solid var(--color-actor-5)">
+              <div class="pattern-icon" style="background: var(--color-actor-5)">💻</div>
+              <h4 class="pattern-title">编码员 Coder</h4>
+              <p class="pattern-desc">当需要运行代码验证或数据处理时,执行 Python 代码并返回结果。<br>Executes Python code for verification or data processing when needed, returns results.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen animate-in" style="--stagger-index: 2">
+          <h2 class="screen-heading">他们如何交流? | How Do They Communicate?</h2>
+          <p>智能体之间通过 <span class="term" data-definition="消息传递(Message Passing)是软件组件之间交换信息的方式,就像同事之间发邮件或即时消息。">消息传递</span> 进行沟通。我们用一个类似聊天应用的动画来展示:</p>
+          <p>Agents communicate through <span class="term" data-definition="Message Passing is how software components exchange information, like colleagues sending emails or instant messages.">message passing</span>. Let's show it with a chat-like animation:</p>
+
+          <div class="chat-window">
+            <div class="chat-messages" id="chat-module2">
+              <!-- Message 0 -->
+              <div class="chat-message" data-msg="0" data-sender="coordinator" style="display:none">
+                <div class="chat-avatar" style="background: var(--color-actor-1)">🎯</div>
+                <div class="chat-bubble">
+                  <span class="chat-sender" style="color: var(--color-actor-1)">协调员 Coordinator</span>
+                  <p>收到用户问题:"帮我研究大语言模型在代码生成的最新进展"。这需要深度研究!</p>
+                  <p style="color: var(--color-text-secondary); font-size: 0.85em;">Received user question: "Help me research latest LLM advances in code generation". This needs deep research!</p>
+                </div>
+              </div>
+
+              <!-- Message 1 -->
+              <div class="chat-message" data-msg="1" data-sender="planner" style="display:none">
+                <div class="chat-avatar" style="background: var(--color-actor-2)">📋</div>
+                <div class="chat-bubble">
+                  <span class="chat-sender" style="color: var(--color-actor-2)">规划师 Planner</span>
+                  <p>好的!我制定了三步计划:1) 搜索最新论文 2) 查找热门开源项目 3) 总结技术趋势</p>
+                  <p style="color: var(--color-text-secondary); font-size: 0.85em;">Got it! I've made a 3-step plan: 1) Search latest papers 2) Find popular open-source projects 3) Summarize tech trends</p>
+                </div>
+              </div>
+
+              <!-- Message 2 -->
+              <div class="chat-message" data-msg="2" data-sender="researcher" style="display:none">
+                <div class="chat-avatar" style="background: var(--color-actor-3)">🔍</div>
+                <div class="chat-bubble">
+                  <span class="chat-sender" style="color: var(--color-actor-3)">研究员 Researcher</span>
+                  <p>开始执行第一步...已搜索到 8 篇相关论文,包括 GPT-4、Claude Code 等最新成果!</p>
+                  <p style="color: var(--color-text-secondary); font-size: 0.85em;">Starting step 1... Found 8 relevant papers, including latest from GPT-4, Claude Code, etc.!</p>
+                </div>
+              </div>
+
+              <!-- Message 3 -->
+              <div class="chat-message" data-msg="3" data-sender="researcher" style="display:none">
+                <div class="chat-avatar" style="background: var(--color-actor-3)">🔍</div>
+                <div class="chat-bubble">
+                  <span class="chat-sender" style="color: var(--color-actor-3)">研究员 Researcher</span>
+                  <p>第二步完成!找到 GitHub 上 Star 数最高的 5 个代码生成项目。</p>
+                  <p style="color: var(--color-text-secondary); font-size: 0.85em;">Step 2 done! Found 5 most-starred code generation projects on GitHub.</p>
+                </div>
+              </div>
+
+              <!-- Message 4 -->
+              <div class="chat-message" data-msg="4" data-sender="reporter" style="display:none">
+                <div class="chat-avatar" style="background: var(--color-actor-4)">📝</div>
+                <div class="chat-bubble">
+                  <span class="chat-sender" style="color: var(--color-actor-4)">报告员 Reporter</span>
+                  <p>收到所有研究材料!正在撰写一份 3000 字的深度分析报告...</p>
+                  <p style="color: var(--color-text-secondary); font-size: 0.85em;">Received all research materials! Writing a 3000-word in-depth analysis report...</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="chat-typing" id="chat-typing-module2" style="display:none">
+              <div class="chat-avatar" id="typing-avatar-module2">?</div>
+              <div class="chat-typing-dots">
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+              </div>
+            </div>
+
+            <div class="chat-controls">
+              <button onclick="playChatNext('module2')">下一条消息 | Next Message</button>
+              <button onclick="playChatAll('module2')">播放全部 | Play All</button>
+              <button onclick="resetChat('module2')">重播 | Replay</button>
+              <span class="chat-progress" id="chat-progress-module2">0 / 5 messages</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen animate-in" style="--stagger-index: 3">
+          <h2 class="screen-heading">实际代码:智能体的定义 | Actual Code: Agent Definitions</h2>
+
+          <div class="translation-block">
+            <div class="translation-code">
+              <span class="translation-label">CODE (src/agents/agents.py)</span>
+              <pre><code><span class="code-keyword">from</span> langchain_core.messages <span class="code-keyword">import</span> HumanMessage, SystemMessage
+
+<span class="code-keyword">def</span> <span class="code-function">create_agent</span>(llm, tools, system_prompt):
+    <span class="code-keyword">return</span> llm.<span class="code-function">bind_tools</span>(tools)
+
+research_agent = <span class="code-function">create_agent</span>(
+    llm=<span class="code-function">get_llm_by_type</span>(<span class="code-string">"advanced"</span>),
+    tools=[web_search_tool, crawl_tool],
+    system_prompt=<span class="code-string">"你是一名专业研究员..."</span>
+)</code></pre>
+            </div>
+            <div class="translation-english">
+              <span class="translation-label">中文解释 | PLAIN ENGLISH</span>
+              <div class="translation-lines">
+                <p class="tl">导入消息类型,用于智能体之间的通信...</p>
+                <p class="tl">Import message types for communication between agents...</p>
+                <p class="tl">创建智能体的通用函数:给它一个 AI 模型、一些工具、一段系统提示...</p>
+                <p class="tl">Universal function to create agents: give it an AI model, some tools, and a system prompt...</p>
+                <p class="tl">创建"研究员"智能体,使用高级 AI 模型,配备网页搜索和爬虫工具...</p>
+                <p class="tl">Create "Researcher" agent using advanced AI model, equipped with web search and crawler tools...</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="callout callout-info">
+            <div class="callout-icon">🔧</div>
+            <div class="callout-content">
+              <strong class="callout-title">好奇心探索 | Curiosity Corner</strong>
+              <p><code>bind_tools</code> 的意思是"给这个 AI 模型安装工具"。就像给工人配备电钻、锯子一样,我们给智能体配备搜索引擎、网页爬虫等工具。</p>
+              <p><code>bind_tools</code> means "install tools for this AI model". Like equipping a worker with drills and saws, we equip agents with search engines, web crawlers, and other tools.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen animate-in" style="--stagger-index: 4">
+          <h2 class="screen-heading">测试:你能匹配角色和任务吗? | Quiz: Can You Match Roles to Tasks?</h2>
+
+          <div class="quiz-container">
+            <div class="quiz-question-block" data-question="q2-1" data-correct="option-c">
+              <h3 class="quiz-question">如果你想让系统执行一段 Python 代码来验证计算,应该由哪个智能体负责?<br>If you want the system to run Python code to verify a calculation, which agent should handle it?</h3>
+              <div class="quiz-options">
+                <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                  <div class="quiz-option-radio"></div>
+                  <span>协调员 Coordinator</span>
+                </button>
+                <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                  <div class="quiz-option-radio"></div>
+                  <span>研究员 Researcher</span>
+                </button>
+                <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                  <div class="quiz-option-radio"></div>
+                  <span>编码员 Coder</span>
+                </button>
+              </div>
+              <div class="quiz-feedback" id="q2-1-feedback"></div>
+            </div>
+
+            <div class="quiz-question-block" data-question="q2-2" data-correct="option-b">
+              <h3 class="quiz-question">当研究员找到大量资料后,下一步是谁开始工作?<br>After the Researcher finds a lot of materials, who starts working next?</h3>
+              <div class="quiz-options">
+                <button class="quiz-option" data-value="option-a" onclick="selectOption(this)">
+                  <div class="quiz-option-radio"></div>
+                  <span>规划师重新制定计划 | Planner remakes the plan</span>
+                </button>
+                <button class="quiz-option" data-value="option-b" onclick="selectOption(this)">
+                  <div class="quiz-option-radio"></div>
+                  <span>报告员整理并撰写报告 | Reporter organizes and writes the report</span>
+                </button>
+                <button class="quiz-option" data-value="option-c" onclick="selectOption(this)">
+                  <div class="quiz-option-radio"></div>
+                  <span>协调员直接返回给用户 | Coordinator returns directly to user</span>
+                </button>
+              </div>
+              <div class="quiz-feedback" id="q2-2-feedback"></div>
+            </div>
+
+            <button class="quiz-check-btn" onclick="checkQuiz('module-2')">检查答案 | Check Answers</button>
+            <button class="quiz-reset-btn" onclick="resetQuiz('module-2')">重新答题 | Try Again</button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- Continuing with remaining modules in next part due to length... -->
+  <!-- JavaScript will be added at the end -->
+
+  <script>
+    // ===== NAVIGATION & PROGRESS =====
+    const progressBar = document.querySelector('.progress-bar');
+    const navDots = document.querySelectorAll('.nav-dot');
+
+    function updateProgressBar() {
+      const scrollTop = window.scrollY;
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = (scrollTop / scrollHeight) * 100;
+      progressBar.style.width = progress + '%';
+      progressBar.setAttribute('aria-valuenow', Math.round(progress));
+    }
+
+    window.addEventListener('scroll', () => {
+      requestAnimationFrame(updateProgressBar);
+    }, { passive: true });
+
+    // Update active nav dot based on scroll position
+    const modules = document.querySelectorAll('.module');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const moduleId = entry.target.id;
+          const index = parseInt(moduleId.split('-')[1]) - 1;
+          navDots.forEach((dot, i) => {
+            dot.classList.remove('active');
+            if (i < index) dot.classList.add('visited');
+            if (i === index) dot.classList.add('active');
+          });
+        }
+      });
+    }, { threshold: 0.5 });
+
+    modules.forEach(module => observer.observe(module));
+
+    // Click nav dots to scroll to modules
+    navDots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        const targetId = `module-${index + 1}`;
+        document.getElementById(targetId).scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
+
+      const activeModule = Array.from(modules).find(m => {
+        const rect = m.getBoundingClientRect();
+        return rect.top >= 0 && rect.top < window.innerHeight / 2;
+      });
+
+      if (!activeModule) return;
+      const currentIndex = parseInt(activeModule.id.split('-')[1]) - 1;
+
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        if (currentIndex < modules.length - 1) {
+          modules[currentIndex + 1].scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+      if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        if (currentIndex > 0) {
+          modules[currentIndex - 1].scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+
+    // ===== ANIMATIONS =====
+    const animateObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.1 });
+
+    document.querySelectorAll('.animate-in').forEach(el => animateObserver.observe(el));
+
+    // Set stagger index for children
+    document.querySelectorAll('.stagger-children').forEach(parent => {
+      Array.from(parent.children).forEach((child, i) => {
+        if (child.classList.contains('animate-in')) {
+          child.style.setProperty('--stagger-index', i);
+        }
+      });
+    });
+
+    // ===== GLOSSARY TOOLTIPS =====
+    let activeTooltip = null;
+
+    function positionTooltip(term, tip) {
+      const rect = term.getBoundingClientRect();
+      const tipWidth = 320;
+      let left = rect.left + rect.width / 2 - tipWidth / 2;
+      left = Math.max(8, Math.min(left, window.innerWidth - tipWidth - 8));
+
+      document.body.appendChild(tip);
+      const tipHeight = tip.offsetHeight;
+      if (rect.top - tipHeight - 8 < 0) {
+        tip.style.top = (rect.bottom + 8) + 'px';
+        tip.classList.add('flip');
+      } else {
+        tip.style.top = (rect.top - tipHeight - 8) + 'px';
+        tip.classList.remove('flip');
+      }
+      tip.style.left = left + 'px';
+    }
+
+    document.querySelectorAll('.term').forEach(term => {
+      const tip = document.createElement('span');
+      tip.className = 'term-tooltip';
+      tip.textContent = term.dataset.definition;
+
+      term.addEventListener('mouseenter', () => {
+        if (activeTooltip && activeTooltip !== tip) {
+          activeTooltip.classList.remove('visible');
+          activeTooltip.remove();
+        }
+        positionTooltip(term, tip);
+        requestAnimationFrame(() => tip.classList.add('visible'));
+        activeTooltip = tip;
+      });
+
+      term.addEventListener('mouseleave', () => {
+        tip.classList.remove('visible');
+        setTimeout(() => { if (!tip.classList.contains('visible')) tip.remove(); }, 150);
+        activeTooltip = null;
+      });
+
+      term.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (activeTooltip && activeTooltip !== tip) {
+          activeTooltip.classList.remove('visible');
+          activeTooltip.remove();
+        }
+        if (tip.classList.contains('visible')) {
+          tip.classList.remove('visible');
+          tip.remove();
+          activeTooltip = null;
+        } else {
+          positionTooltip(term, tip);
+          requestAnimationFrame(() => tip.classList.add('visible'));
+          activeTooltip = tip;
+        }
+      });
+    });
+
+    document.addEventListener('click', () => {
+      if (activeTooltip) {
+        activeTooltip.classList.remove('visible');
+        activeTooltip.remove();
+        activeTooltip = null;
+      }
+    });
+
+    // ===== QUIZ FUNCTIONALITY =====
+    window.selectOption = function(btn) {
+      const block = btn.closest('.quiz-question-block');
+      block.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+      btn.classList.add('selected');
+    };
+
+    const quizExplanations = {
+      'q1-1': {
+        correct: '完全正确!协调员是系统的"入口",负责理解用户意图并决定下一步。 | Exactly! The Coordinator is the "entry point" of the system, responsible for understanding user intent and deciding the next step.',
+        incorrect: '不太对。在 DeerFlow-CN 中,协调员(Coordinator)是第一个接收和理解用户问题的角色,然后才会调用其他智能体。 | Not quite. In DeerFlow-CN, the Coordinator is the first role to receive and understand the user question, then calls other agents.'
+      },
+      'q1-2': {
+        correct: '正是如此!这种设计模式叫"关注点分离"(Separation of Concerns),是软件工程的核心理念。 | Precisely! This design pattern is called "Separation of Concerns", a core concept in software engineering.',
+        incorrect: '不对哦。分工协作的真正原因是让每个组件专注做好一件事,这样系统既强大又易于维护和扩展。 | Not quite. The real reason for division of labor is to let each component focus on doing one thing well, making the system both powerful and easy to maintain and extend.'
+      },
+      'q2-1': {
+        correct: '完全正确!编码员(Coder)专门负责执行 Python 代码,就像团队中的技术专家。 | Exactly! The Coder is specifically responsible for executing Python code, like the tech expert on the team.',
+        incorrect: '不太对。虽然其他智能体也很重要,但执行代码是编码员(Coder)的专门职责。 | Not quite. While other agents are important, executing code is the Coder\'s specialized responsibility.'
+      },
+      'q2-2': {
+        correct: '非常好!报告员(Reporter)会收集所有研究成果,整合并撰写最终报告。 | Very good! The Reporter collects all research findings, integrates them, and writes the final report.',
+        incorrect: '不对。研究完成后,报告员(Reporter)会接手,整理所有材料并撰写结构化的报告。 | Incorrect. After research is done, the Reporter takes over to organize all materials and write a structured report.'
+      }
+    };
+
+    window.checkQuiz = function(moduleId) {
+      const container = document.querySelector(`#${moduleId} .quiz-container`);
+      const questions = container.querySelectorAll('.quiz-question-block');
+
+      questions.forEach(q => {
+        const selected = q.querySelector('.quiz-option.selected');
+        const feedback = q.querySelector('.quiz-feedback');
+        const correctValue = q.dataset.correct;
+        const qId = q.dataset.question;
+
+        if (!selected) {
+          feedback.textContent = '请先选择一个答案! | Pick an answer first!';
+          feedback.className = 'quiz-feedback show error';
+          return;
+        }
+
+        q.querySelectorAll('.quiz-option').forEach(o => o.disabled = true);
+
+        if (selected.dataset.value === correctValue) {
+          selected.classList.add('correct');
+          feedback.innerHTML = '<strong>太棒了! Excellent!</strong> ' + quizExplanations[qId].correct;
+          feedback.className = 'quiz-feedback show success';
+        } else {
+          selected.classList.add('incorrect');
+          q.querySelector(`[data-value="${correctValue}"]`).classList.add('correct');
+          feedback.innerHTML = '<strong>再想想 | Think again</strong><br>' + quizExplanations[qId].incorrect;
+          feedback.className = 'quiz-feedback show error';
+        }
+      });
+    };
+
+    window.resetQuiz = function(moduleId) {
+      const container = document.querySelector(`#${moduleId} .quiz-container`);
+      const questions = container.querySelectorAll('.quiz-question-block');
+
+      questions.forEach(q => {
+        q.querySelectorAll('.quiz-option').forEach(o => {
+          o.classList.remove('selected', 'correct', 'incorrect');
+          o.disabled = false;
+        });
+        q.querySelector('.quiz-feedback').className = 'quiz-feedback';
+      });
+    };
+
+    // ===== CHAT ANIMATION =====
+    const chatStates = {
+      module2: { index: 0, messages: null, typing: null, progress: null }
+    };
+
+    function initChat(moduleId) {
+      if (!chatStates[moduleId].messages) {
+        chatStates[moduleId].messages = document.querySelectorAll(`#chat-${moduleId} .chat-message`);
+        chatStates[moduleId].typing = document.getElementById(`chat-typing-${moduleId}`);
+        chatStates[moduleId].progress = document.getElementById(`chat-progress-${moduleId}`);
+      }
+    }
+
+    const actorData = {
+      'coordinator': { initials: '🎯', color: 'var(--color-actor-1)' },
+      'planner': { initials: '📋', color: 'var(--color-actor-2)' },
+      'researcher': { initials: '🔍', color: 'var(--color-actor-3)' },
+      'reporter': { initials: '📝', color: 'var(--color-actor-4)' },
+      'coder': { initials: '💻', color: 'var(--color-actor-5)' }
+    };
+
+    window.playChatNext = function(moduleId) {
+      initChat(moduleId);
+      const state = chatStates[moduleId];
+
+      if (state.index >= state.messages.length) return;
+
+      const msg = state.messages[state.index];
+      const sender = msg.dataset.sender;
+      const avatar = document.getElementById(`typing-avatar-${moduleId}`);
+
+      avatar.textContent = actorData[sender].initials;
+      avatar.style.background = actorData[sender].color;
+      state.typing.style.display = 'flex';
+
+      setTimeout(() => {
+        state.typing.style.display = 'none';
+        msg.style.display = 'flex';
+        msg.style.animation = 'fadeSlideUp 0.3s var(--ease-out)';
+        state.index++;
+        state.progress.textContent = `${state.index} / ${state.messages.length} messages`;
+      }, 800);
+    };
+
+    window.playChatAll = function(moduleId) {
+      initChat(moduleId);
+      const state = chatStates[moduleId];
+
+      const interval = setInterval(() => {
+        if (state.index >= state.messages.length) {
+          clearInterval(interval);
+          return;
+        }
+        playChatNext(moduleId);
+      }, 1200);
+    };
+
+    window.resetChat = function(moduleId) {
+      initChat(moduleId);
+      const state = chatStates[moduleId];
+
+      state.messages.forEach(m => m.style.display = 'none');
+      state.typing.style.display = 'none';
+      state.index = 0;
+      state.progress.textContent = `0 / ${state.messages.length} messages`;
+    };
+  </script>
+</body>
+</html>
